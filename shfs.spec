@@ -157,8 +157,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc COPYRIGHT Changelog TODO docs/html
-%attr(4755,root,root) %{_bindir}/shfsmount
-%attr(755,root,root) %{_bindir}/shfsumount
+%attr(4754,root,wheel) %{_bindir}/shfsmount
+%attr(4754,root,wheel) %{_bindir}/shfsumount
 %attr(755,root,root) /sbin/*
 %{_mandir}/man8/*
 %endif
