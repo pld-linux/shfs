@@ -10,7 +10,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.33
-%define		_rel	1
+%define		_rel	1.1
 Release:	%{_rel}
 License:	GPL
 Group:		Applications/System
@@ -118,16 +118,19 @@ cd -
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
 
 %if %{with kernel}
 cd shfs/Linux-2.6/built
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
 install shfs-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko
+cd -
+%endif
+
 %if %{with smp} && %{with kernel}
+cd shfs/Linux-2.6/built
 install shfs-smp.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/shfs.ko
-%endif
 cd -
 %endif
 
