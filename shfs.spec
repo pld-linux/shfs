@@ -1,6 +1,6 @@
 #
 # Conditional build:
-# _without_dist_kernel          without distribution kernel
+%bcond_without dist_kernel	# without distribution kernel
 #
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
@@ -10,11 +10,11 @@ Version:	0.32
 Release:	%{rel}
 License:	GPL
 Group:		Applications/System
-Source0:	http://dl.sf.net/shfs/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # Source0-md5:	477c4236f24c770238075f04de38fd71
 Patch0:		%{name}-opt.patch
 URL:		http://shfs.sourceforge.net/
-%{!?_without_dist_kernel:BuildRequires:         kernel-headers}
+%{?with_dist_kernel:BuildRequires:         kernel-headers}
 BuildRequires:	%{kgcc_package}
 BuildRequires:	rpmbuild(macros) >= 1.118
 Obsoletes:	shfsmount
@@ -42,7 +42,7 @@ Summary:	SHell File System Linux kernel module
 Summary(pl):	Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{!?_without_dist_kernel:%requires_releq_kernel_up}
+%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 Obsoletes:	kernel-misc-shfs
 
@@ -57,7 +57,7 @@ Summary:	SHell File System Linux SMP kernel module
 Summary(pl):	Modu³ j±dra Linuksa SMP obs³uguj±cy pow³okowy system plików
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{!?_without_dist_kernel:%requires_releq_kernel_smp}
+%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 Obsoletes:	kernel-smp-misc-shfs
 
