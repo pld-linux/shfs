@@ -38,5 +38,3 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*
 /sbin/*
-# the line above MUST be better!
-/lib/modules/2.4.20/kernel/fs/shfs/*
