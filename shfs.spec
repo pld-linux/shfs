@@ -157,11 +157,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with kernel}
 %files -n kernel-fs-shfs
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/kernel/fs/shfs/*.ko*
+/lib/modules/%{_kernel_ver}/kernel/fs/shfs
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel-smp-fs-shfs
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/*.ko*
+/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs
 %endif
 %endif
