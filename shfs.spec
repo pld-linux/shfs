@@ -23,7 +23,7 @@ URL:		http://shfs.sourceforge.net/
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	%{kgcc_package}
 %endif
-Requires:	kernel-fs-shfs
+%{?with_dist_kernel:Requires:	kernel-fs-shfs}
 BuildRequires:	rpmbuild(macros) >= 1.153
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
