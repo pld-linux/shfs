@@ -80,16 +80,19 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %build
 %if %{with kernel}
 cd shfs/Linux-2.6
+rm -rf built
+mkdir built
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
     fi
-    rm -rf include
-    install -d include/{linux,config}
     %{__make} -C %{_kernelsrcdir} mrproper \
 	SUBDIRS=$PWD \
 	O=$PWD \
+	RCS_FIND_IGNORE="-name built"
 	%{?with_verbose:V=1}
+    rm -rf include
+    install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
     ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h include/linux/autoconf.h
     touch include/config/MARKER
@@ -99,7 +102,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	SUBDIRS=$PWD \
 	O=$PWD \
 	%{?with_verbose:V=1}
-    mv shfs.ko shfs-$cfg.ko
+    mv shfs.ko built/shfs-$cfg.ko
 done
 cd -
 %endif
@@ -117,7 +120,7 @@ cd -
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-cd shfs/Linux-2.6
+cd shfs/Linux-2.6/built
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
 install shfs-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko
