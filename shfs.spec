@@ -10,7 +10,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.35
-%define		_rel	1
+%define		_rel	2
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
@@ -23,6 +23,7 @@ URL:		http://shfs.sourceforge.net/
 BuildRequires:	%{kgcc_package}
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.153
+Requires:	kernel-fs-shfs = %{version}-%{_rel}@%{_kernel_ver_str}
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -65,6 +66,8 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
+Provides:	kernel-fs-shfs
+Obsoletes:	kernel-fs-shfs
 Obsoletes:	kernel-smp-misc-shfs
 
 %description -n kernel-fs-shfs
@@ -84,10 +87,6 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
     fi
-    %{__make} -C %{_kernelsrcdir} clean \
-	%{?with_verbose:V=1} \
-	RCS_FIND_IGNORE="-name '*.ko' -o" \
-	M=$PWD O=$PWD
     rm -rf include
     install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
@@ -96,9 +95,12 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     touch include/config/MARKER
     echo "obj-m := shfs.o" > Makefile
     echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
-    %{__make} -C %{_kernelsrcdir} modules \
+    %{__make} -C %{_kernelsrcdir} clean \
 	%{?with_verbose:V=1} \
 	RCS_FIND_IGNORE="-name '*.ko' -o" \
+	M=$PWD O=$PWD
+    %{__make} -C %{_kernelsrcdir} modules \
+	%{?with_verbose:V=1} \
 	M=$PWD O=$PWD
     mv shfs.ko shfs-$cfg.ko
 done
@@ -107,6 +109,7 @@ cd -
 
 %if %{with userspace}
 %{__make} -C shfsmount \
+	SHFS_VERSION=\"%{version}\" \
 	CC="%{__cc}" \
 	OPT="%{rpmcflags}" \
 	LDFLAGS="%{rpmldflags}"
