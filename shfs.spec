@@ -12,14 +12,14 @@ URL:		http://shfs.sourceforge.net/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-SHFS is a simple and easy to use Linux kernel (2.4) module which allows you to
-mount remote filesystems using plain shell (ssh/rsh) connection. It supports
-some nice features like number of different caches for access speedup, target
-system optimisations, etc.
+SHFS is a simple and easy to use Linux kernel (2.4) module which
+allows you to mount remote filesystems using plain shell (ssh/rsh)
+connection. It supports some nice features like number of different
+caches for access speedup, target system optimisations, etc.
 
 %description -l pl
-SHFS to prosty i bezpieczny pomys³, aby zaimplementowaæ modu³ systemu plików
-bazuj±cy na po³±czaniu przez ssh (secure shell).
+SHFS to prosty i bezpieczny pomys³, aby zaimplementowaæ modu³ systemu
+plików bazuj±cy na po³±czaniu przez ssh (secure shell).
 
 %prep
 %setup -q
@@ -36,7 +36,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%{_bindir}/*
+%attr(755,root,root) %{_bindir}/*
 /sbin/*
 # the line above MUST be better!
 /lib/modules/2.4.20/kernel/fs/shfs/*
