@@ -17,6 +17,7 @@ Group:		Applications/System
 Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # Source0-md5:	016f49d71bc32eee2b5d11fc1600cfbe
 Patch0:		%{name}-opt.patch
+Patch1:		%{name}-df.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
@@ -77,7 +78,8 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p0
 
 %build
 %if %{with kernel}
