@@ -86,25 +86,25 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %if %{with kernel}
 cd shfs/Linux-2.6
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-    if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-	exit 1
-    fi
-    rm -rf include
-    install -d include/{linux,config}
-    ln -sf %{_kernelsrcdir}/config-$cfg .config
-    ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-    ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-    touch include/config/MARKER
-    echo "obj-m := shfs.o" > Makefile
-    echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
-    %{__make} -C %{_kernelsrcdir} clean \
-	%{?with_verbose:V=1} \
-	RCS_FIND_IGNORE="-name '*.ko' -o" \
-	M=$PWD O=$PWD
-    %{__make} -C %{_kernelsrcdir} modules \
-	%{?with_verbose:V=1} \
-	M=$PWD O=$PWD
-    mv shfs.ko shfs-$cfg.ko
+	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
+		exit 1
+	fi
+	rm -rf include
+	install -d include/{linux,config}
+	ln -sf %{_kernelsrcdir}/config-$cfg .config
+	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
+	ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+	touch include/config/MARKER
+	echo "obj-m := shfs.o" > Makefile
+	echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
+	%{__make} -C %{_kernelsrcdir} clean \
+		%{?with_verbose:V=1} \
+		RCS_FIND_IGNORE="-name '*.ko' -o" \
+		M=$PWD O=$PWD
+	%{__make} -C %{_kernelsrcdir} modules \
+		%{?with_verbose:V=1} \
+		M=$PWD O=$PWD
+	mv shfs.ko shfs-$cfg.ko
 done
 cd -
 %endif
