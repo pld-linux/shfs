@@ -80,16 +80,10 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %build
 %if %{with kernel}
 cd shfs/Linux-2.6
-rm -rf built
-mkdir built
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
     fi
-    %{__make} -C %{_kernelsrcdir} mrproper \
-	M=$PWD O=$PWD \
-	RCS_FIND_IGNORE="-name built" \
-	%{?with_verbose:V=1}
     rm -rf include
     install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
@@ -97,10 +91,11 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
     touch include/config/MARKER
     echo "obj-m := shfs.o" > Makefile
     echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
-    %{__make} -C %{_kernelsrcdir} modules \
+    %{__make} -C %{_kernelsrcdir} clean modules \
+	RCS_FIND_IGNORE="-name '*.ko' -o" \
 	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
-    mv shfs.ko built/shfs-$cfg.ko
+    mv shfs.ko shfs-$cfg.ko
 done
 cd -
 %endif
@@ -110,25 +105,21 @@ cd -
 	CC="%{__cc}" \
 	OPT="%{rpmcflags}" \
 	LDFLAGS="%{rpmldflags}"
-
 %{__make} docs
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
 
 %if %{with kernel}
-cd shfs/Linux-2.6/built
+cd shfs/Linux-2.6
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
 install shfs-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko
-cd -
-%endif
-
-%if %{with smp} && %{with kernel}
-cd shfs/Linux-2.6/built
+%if %{with smp} && %{with dist_kernel}
 install shfs-smp.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/shfs.ko
+%endif
 cd -
 %endif
 
