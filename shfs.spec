@@ -5,13 +5,13 @@
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
-Version:	0.32pre2
+Version:	0.32
 %define	rel	1
 Release:	%{rel}
 License:	GPL
 Group:		Applications/System
-Source0:	http://atrey.karlin.mff.cuni.cz/~qiq/src/shfs/shfs-0.32/%{name}-%{version}.tar.gz
-# Source0-md5:	36e466c4e694700cc64b67ef13a4288b
+Source0:	http://dl.sf.net/shfs/%{name}-%{version}.tar.gz
+# Source0-md5:	477c4236f24c770238075f04de38fd71
 Patch0:		%{name}-opt.patch
 URL:		http://shfs.sourceforge.net/
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers}
@@ -122,8 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n kernel-fs-shfs
 %defattr(644,root,root,755)
-%attr(755,root,root) /lib/modules/%{_kernel_ver}/kernel/fs/shfs/*.o*
+/lib/modules/%{_kernel_ver}/kernel/fs/shfs/*.o*
 
 %files -n kernel-smp-fs-shfs
 %defattr(644,root,root,755)
-%attr(755,root,root) /lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/*.o*
+/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/*.o*
