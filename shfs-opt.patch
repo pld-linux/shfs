@@ -1,0 +1,22 @@
+--- shfs-0.32pre1/shfs/Makefile.orig	Tue Jun 10 09:56:26 2003
++++ shfs-0.32pre1/shfs/Makefile	Tue Aug 12 16:47:30 2003
+@@ -19,7 +19,7 @@
+ SEARCHDIRS := -I- -I. -I${KERNEL_SOURCES}/include -I/usr/src/linux/include/
+ 
+ CC     := gcc
+-CFLAGS  = -O2 -fomit-frame-pointer -fno-strict-aliasing -pipe -Wall ${SEARCHDIRS} -DMODULE ${MVER} -D__KERNEL__ -DLINUX -DDEBUG_LEVEL=${DEBUG}
++CFLAGS  = $(OPT) -fomit-frame-pointer -fno-strict-aliasing -pipe -Wall ${SEARCHDIRS} -DMODULE ${MVER} -D__KERNEL__ -DLINUX -DDEBUG_LEVEL=${DEBUG}
+ LINKER    := ld
+ LDFLAGS    = -m elf_i386 -r
+ LOADLIBES := 
+--- shfs-0.32pre1/shfsmount/Makefile.orig	Tue Jun 10 09:56:26 2003
++++ shfs-0.32pre1/shfsmount/Makefile	Tue Aug 12 16:47:41 2003
+@@ -10,7 +10,7 @@
+ SEARCHDIRS := -I- -I.
+ 
+ CC     := gcc
+-CFLAGS  = -g -Wall ${SEARCHDIRS} -DVERSION=\"${VERSION}\" -DDEBUG_LEVEL=${DEBUG}
++CFLAGS  = $(OPT) -Wall ${SEARCHDIRS} -DVERSION=\"${VERSION}\" -DDEBUG_LEVEL=${DEBUG}
+ 
+ LINKER    := gcc
+ LDFLAGS    = 
