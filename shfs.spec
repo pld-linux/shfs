@@ -8,9 +8,9 @@ Group:		Applications/Mail
 # Source0-md5:	eb4840e893da72f6169796b020a77769
 Source0:	http://atrey.karlin.mff.cuni.cz/~qiq/src/shfs/%{name}-%{version}.tar.gz
 Requires:	kernel-headers
-Requires(post,postun):  /sbin/depmod
-BuildRequires:  %{kgcc_package}
-BuildRequires:  rpmbuild(macros) >= 1.118
+Requires(post,postun):	/sbin/depmod
+BuildRequires:	%{kgcc_package}
+BuildRequires:	rpmbuild(macros) >= 1.118
 URL:		http://shfs.sourceforge.net/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -27,10 +27,10 @@ plików bazuj±cy na po³±czaniu przez ssh (secure shell).
 %package -n shfs-kernel
 Summary:	SHFS Linux kernel module
 Summary(pl):	Modu³ j±dra wspieraj±cy system plików przez ssh	
-#Release:        %{version}_%{release}@%{_kernel_ver_str}
-Release:        %{release}@%{_kernel_ver_str}
-Group:          Base/Kernel
-Requires(post,postun):  /sbin/depmod
+#Release:	%{version}_%{release}@%{_kernel_ver_str}
+Release:	%{release}@%{_kernel_ver_str}
+Group:		Base/Kernel
+Requires(post,postun):	/sbin/depmod
 
 %description -n shfs-kernel
 Linux kernel module for SHFS
