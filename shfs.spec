@@ -28,19 +28,19 @@ Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-SHFS is a simple and easy to use Linux kernel (2.4) module which
-allows you to mount remote filesystems using plain shell (ssh/rsh)
-connection. It supports some nice features like number of different
-caches for access speedup, target system optimisations, etc.
+SHFS is a simple and easy to use Linux kernel 2.4.10+ and 2.6 module
+which allows you to mount remote filesystems using plain shell
+(ssh/rsh) connection. It supports some nice features like number of
+different caches for access speedup, target system optimisations, etc.
 
 This package contains utilities for SHFS.
 
 %description -l pl
-SHFS to prosty i ³atwy w u¿yciu modu³ j±dra Linuksa (2.4) pozwalaj±cy
-montowaæ zdalne systemy plików przy u¿yciu zwyk³ego po³±czenia ze
-zdaln± pow³ok± (ssh lub rsh). Obs³uguje pewne mi³e cechy, takie jak
-ró¿ne sposoby buforowania dla przyspieszenia dostêpu, optymalizacje
-pod k±tem zdalnego systemu itp.
+SHFS to prosty i ³atwy w u¿yciu modu³ j±dra Linuksa 2.4.10+ i 2.6
+pozwalaj±cy montowaæ zdalne systemy plików przy u¿yciu zwyk³ego
+po³±czenia ze zdaln± pow³ok± (ssh lub rsh). Obs³uguje pewne mi³e
+cechy, takie jak ró¿ne sposoby buforowania dla przyspieszenia dostêpu,
+optymalizacje pod k±tem zdalnego systemu itp.
 
 Ten pakiet zawiera programy narzêdziowe dla SHFS.
 
