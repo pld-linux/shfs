@@ -2,7 +2,7 @@ Summary:	(Secure) SHell FileSystem Linux kernel module
 Summary(pl):	Modu³ j±dra wspieraj±cy system plików przez ssh
 Name:		shfs
 Version:	0.32pre1
-Release:	0.1
+Release:	2
 License:	GPL
 Group:		Applications/Mail
 # Source0-md5:	eb4840e893da72f6169796b020a77769
@@ -30,6 +30,8 @@ plików bazuj±cy na po³±czaniu przez ssh (secure shell).
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__make} install ROOT="$RPM_BUILD_ROOT"
+install -d $RPM_BUILD_ROOT/%{_mandir}/man8
+install docs/manpages/*.8 $RPM_BUILD_ROOT/%{_mandir}/man8
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -38,3 +40,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*
 /sbin/*
+%{_mandir}/man8/*
