@@ -1,6 +1,3 @@
-# TODO:
-# - look at official patches: http://atrey.karlin.mff.cuni.cz/~qiq/src/shfs/shfs-%{version}/
-# /TODO
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -13,7 +10,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.35
-%define		_rel	4
+%define		_rel	5
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
@@ -21,13 +18,15 @@ Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # Source0-md5:	016f49d71bc32eee2b5d11fc1600cfbe
 Patch0:		%{name}-opt.patch
 Patch1:		%{name}-df.patch
+Patch2:		%{name}-space_chars.patch
+Patch3:		%{name}-uidgid32.patch
+Patch4:		%{name}-gcc4.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	%{kgcc_package}
+BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:Requires:	kernel-fs-shfs}
-BuildRequires:	rpmbuild(macros) >= 1.153
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -53,8 +52,11 @@ Summary:	SHell File System Linux kernel module
 Summary(pl):	Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
+%if %{with dist_kernel}
+%requires_releq_kernel_up
+Requires(postun):	%releq_kernel_up
+%endif
 Obsoletes:	kernel-misc-shfs
 
 %description -n kernel-fs-shfs
@@ -68,8 +70,11 @@ Summary:	SHell File System Linux SMP kernel module
 Summary(pl):	Modu³ j±dra Linuksa SMP obs³uguj±cy pow³okowy system plików
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
+%if %{with dist_kernel}
+%requires_releq_kernel_smp
+Requires(postun):	%releq_kernel_smp
+%endif
 Provides:	kernel-fs-shfs
 Obsoletes:	kernel-fs-shfs
 Obsoletes:	kernel-smp-misc-shfs
@@ -84,6 +89,9 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %setup -q
 %patch0 -p1
 %patch1 -p0
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 %build
 %if %{with kernel}
