@@ -1,5 +1,5 @@
---- shfs-0.32pre1/shfs/Makefile.orig	Tue Jun 10 09:56:26 2003
-+++ shfs-0.32pre1/shfs/Makefile	Tue Aug 12 16:47:30 2003
+--- shfs-0.32pre1/shfs/Linux-2.4/Makefile.orig	Tue Jun 10 09:56:26 2003
++++ shfs-0.32pre1/shfs/Linux-2.4/Makefile	Tue Aug 12 16:47:30 2003
 @@ -19,7 +19,7 @@
  SEARCHDIRS := -I- -I. -I${KERNEL_SOURCES}/include -I/usr/src/linux/include/
  
