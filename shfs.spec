@@ -4,6 +4,7 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
+%bcond_without	userspace	# don't build userspace tools
 #
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
@@ -17,12 +18,11 @@ Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # Source0-md5:	4a934725cc3a7695b0ddf248736c871a
 Patch0:		%{name}-opt.patch
 URL:		http://shfs.sourceforge.net/
-%if %{with kernel} && %{with dist_kernel}
-BuildRequires:	kernel-module-build
-%endif
+%if %{with kernel}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build}
 BuildRequires:	%{kgcc_package}
+%endif
 BuildRequires:	rpmbuild(macros) >= 1.118
-%{?with_dist_kernel:%requires_releq_kernel_up}
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -79,8 +79,7 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 
 %build
 %if %{with kernel}
-# kernel module(s)
-cd shfs/Linux-2.6/
+cd shfs/Linux-2.6
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
     if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 	exit 1
@@ -105,18 +104,20 @@ done
 cd -
 %endif
 
+%if %{with userspace}
 %{__make} -C shfsmount \
 	CC="%{__cc}" \
 	OPT="%{rpmcflags}" \
 	LDFLAGS="%{rpmldflags}"
 
 %{__make} docs
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-cd shfs/Linux-2.6/
+cd shfs/Linux-2.6
 install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
 install shfs-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
 	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko
@@ -126,9 +127,12 @@ install shfs-smp.ko \
 %endif
 cd -
 %endif
+
+%if %{with userspace}
 %{__make} utils-install docs-install \
 	ROOT=$RPM_BUILD_ROOT \
 	MAN_PAGE_DIR=%{_mandir}
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -145,12 +149,14 @@ rm -rf $RPM_BUILD_ROOT
 %postun -n kernel-smp-fs-shfs
 %depmod %{_kernel_ver}smp
 
+%if %{with userspace}
 %files
 %defattr(644,root,root,755)
 %doc COPYRIGHT Changelog TODO docs/html
 %attr(755,root,root) %{_bindir}/*
-/sbin/*
+%attr(755,root,root) /sbin/*
 %{_mandir}/man8/*
+%endif
 
 %if %{with kernel}
 %files -n kernel-fs-shfs
