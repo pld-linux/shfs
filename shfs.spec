@@ -87,20 +87,18 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	exit 1
     fi
     %{__make} -C %{_kernelsrcdir} mrproper \
-	SUBDIRS=$PWD \
-	O=$PWD \
-	RCS_FIND_IGNORE="-name built"
+	M=$PWD O=$PWD \
+	RCS_FIND_IGNORE="-name built" \
 	%{?with_verbose:V=1}
     rm -rf include
     install -d include/{linux,config}
     ln -sf %{_kernelsrcdir}/config-$cfg .config
-    ln -sf %{_kernelsrcdir}/include/linux/autoconf-${cfg}.h include/linux/autoconf.h
+    ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
     touch include/config/MARKER
     echo "obj-m := shfs.o" > Makefile
     echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
     %{__make} -C %{_kernelsrcdir} modules \
-	SUBDIRS=$PWD \
-	O=$PWD \
+	M=$PWD O=$PWD \
 	%{?with_verbose:V=1}
     mv shfs.ko built/shfs-$cfg.ko
 done
@@ -169,7 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/shfs/*.ko*
 
-%if %{with smp} && %{with dist_files}
+%if %{with smp} && %{with dist_kernel}
 %files -n kernel-smp-fs-shfs
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/*.ko*
