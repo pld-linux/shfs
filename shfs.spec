@@ -1,3 +1,6 @@
+# TODO:
+# - look at official patches: http://atrey.karlin.mff.cuni.cz/~qiq/src/shfs/shfs-%{version}/
+# /TODO
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
