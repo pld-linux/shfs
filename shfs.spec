@@ -5,13 +5,13 @@
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
-Version:	0.32pre1
-%define	rel	3
+Version:	0.32pre2
+%define	rel	1
 Release:	%{rel}
 License:	GPL
 Group:		Applications/System
-# Source0-md5:	eb4840e893da72f6169796b020a77769
-Source0:	http://atrey.karlin.mff.cuni.cz/~qiq/src/shfs/%{name}-%{version}.tar.gz
+Source0:	http://atrey.karlin.mff.cuni.cz/~qiq/src/shfs/shfs-0.32/%{name}-%{version}.tar.gz
+# Source0-md5:	36e466c4e694700cc64b67ef13a4288b
 Patch0:		%{name}-opt.patch
 URL:		http://shfs.sourceforge.net/
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers}
@@ -76,7 +76,7 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 	CC="%{kgcc} -D__SMP__" \
 	OPT="%{rpmcflags}"
 
-mv -f shfs/shfs.o shfs.smp.o
+mv -f shfs/Linux-2.4/shfs.o shfs.smp.o
 
 %{__make} clean -C shfs
 %{__make} -C shfs \
