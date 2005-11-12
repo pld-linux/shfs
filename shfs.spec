@@ -10,7 +10,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.35
-%define		_rel	7
+%define		_rel	8
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
@@ -35,7 +35,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %ifarch sparc
 %define         _target_base_arch       sparc64
-%define         _target_cpu             sparc64
+%define         _target_base_cpu             sparc64
 %endif
 
 %description
@@ -134,7 +134,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	%{__make} -C %{_kernelsrcdir} modules \
 %if "%{_target_base_arch}" != "%{_arch}"
                 ARCH=%{_target_base_arch} \
-                CROSS_COMPILE=%{_target_cpu}-pld-linux- \
+                CROSS_COMPILE=%{_target_base_cpu}-pld-linux- \
 %endif
                 HOSTCC="%{__cc}" \
 		%{?with_verbose:V=1} \
