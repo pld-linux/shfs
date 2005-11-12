@@ -27,8 +27,16 @@ URL:		http://shfs.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:Requires:	kernel-fs-shfs}
+%ifarch sparc
+BuildRequires:	crosssparc64-gcc
+%endif
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%ifarch sparc
+%define         _target_base_arch       sparc64
+%define         _target_cpu             sparc64
+%endif
 
 %description
 SHFS is a simple and easy to use Linux kernel 2.4.10+ and 2.6 module
@@ -104,7 +112,17 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	install -d include/{linux,config}
 	ln -sf %{_kernelsrcdir}/config-$cfg .config
 	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-	ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+%ifarch ppc
+        if [ -d "%{_kernelsrcdir}/include/asm-powerpc" ]; then
+                install -d include/asm
+                cp -a %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* include/asm
+                cp -a %{_kernelsrcdir}/include/asm-powerpc/* include/asm
+        else
+                ln -sf %{_kernelsrcdir}/include/asm-powerpc include/asm
+        fi
+%else
+        ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
+%endif
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
 	touch include/config/MARKER
 	echo "obj-m := shfs.o" > Makefile
@@ -114,6 +132,11 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
 		M=$PWD O=$PWD
 	%{__make} -C %{_kernelsrcdir} modules \
+%if "%{_target_base_arch}" != "%{_arch}"
+                ARCH=%{_target_base_arch} \
+                CROSS_COMPILE=%{_target_cpu}-pld-linux- \
+%endif
+                HOSTCC="%{__cc}" \
 		%{?with_verbose:V=1} \
 		M=$PWD O=$PWD
 	mv shfs.ko shfs-$cfg.ko
