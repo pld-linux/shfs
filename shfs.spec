@@ -10,7 +10,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.35
-%define		_rel	8
+%define		_rel	9
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
@@ -21,6 +21,7 @@ Patch1:		%{name}-df.patch
 Patch2:		%{name}-space_chars.patch
 Patch3:		%{name}-uidgid32.patch
 Patch4:		%{name}-gcc4.patch
+Patch5:		%{name}-inode_oops.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
@@ -34,8 +35,8 @@ Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %ifarch sparc
-%define         _target_base_arch       sparc64
-%define         _target_base_cpu             sparc64
+%define		_target_base_arch	sparc64
+%define		_target_base_cpu	sparc64
 %endif
 
 %description
@@ -100,6 +101,7 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 %if %{with kernel}
