@@ -28,16 +28,8 @@ URL:		http://shfs.sourceforge.net/
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:Requires:	kernel-fs-shfs}
-%ifarch sparc
-BuildRequires:	crosssparc64-gcc
-%endif
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%ifarch sparc
-%define		_target_base_arch	sparc64
-%define		_target_base_cpu	sparc64
-%endif
 
 %description
 SHFS is a simple and easy to use Linux kernel 2.4.10+ and 2.6 module
