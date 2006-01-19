@@ -145,8 +145,8 @@ cd -
 %if %{with userspace}
 %{__make} -C shfsmount \
 	SHFS_VERSION=\"%{version}\" \
-	CC="%{__cc}" \
-	OPT="%{rpmcflags}" \
+	CC="%{__cc} %{rpmcflags}" \
+	LINKER="%{__cc}"	\
 	LDFLAGS="%{rpmldflags}"
 %{__make} docs
 %endif
