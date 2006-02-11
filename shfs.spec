@@ -14,7 +14,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.35
-%define		_rel	11
+%define		_rel	12
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
@@ -106,29 +106,18 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	rm -rf include
-	install -d include/{linux,config}
-	ln -sf %{_kernelsrcdir}/config-$cfg .config
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-%ifarch ppc
-	if [ -d "%{_kernelsrcdir}/include/asm-powerpc" ]; then
-		install -d include/asm
-		cp -a %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* include/asm
-		cp -a %{_kernelsrcdir}/include/asm-powerpc/* include/asm
-	else
-		ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-	fi
-%else
-	ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-%endif
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-	touch include/config/MARKER
+        install -d o/include/linux
+        ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+        ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+        ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+        %{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+	
 	echo "obj-m := shfs.o" > Makefile
 	echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
 	%{__make} -C %{_kernelsrcdir} clean \
 		%{?with_verbose:V=1} \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		M=$PWD O=$PWD
+		M=$PWD O=$PWD/o
 	%{__make} -C %{_kernelsrcdir} modules \
 %if "%{_target_base_arch}" != "%{_arch}"
                 ARCH=%{_target_base_arch} \
@@ -136,7 +125,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 %endif
                 HOSTCC="%{__cc}" \
 		%{?with_verbose:V=1} \
-		M=$PWD O=$PWD
+		M=$PWD O=$PWD/o
 	mv shfs.ko shfs-$cfg.ko
 done
 cd -
