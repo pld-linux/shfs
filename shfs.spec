@@ -10,15 +10,15 @@
 %undefine	with_smp
 %endif
 #
+%define		_rel	12
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
 Version:	0.35
-%define		_rel	12
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/shfs/%{name}-%{version}.tar.gz
 # Source0-md5:	016f49d71bc32eee2b5d11fc1600cfbe
 Patch0:		%{name}-opt.patch
 Patch1:		%{name}-df.patch
@@ -111,7 +111,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
         ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
         ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
         %{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-	
+
 	echo "obj-m := shfs.o" > Makefile
 	echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
 	%{__make} -C %{_kernelsrcdir} clean \
