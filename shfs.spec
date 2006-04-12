@@ -28,7 +28,7 @@ Patch4:		%{name}-gcc4.patch
 Patch5:		%{name}-inode_oops.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
 %endif
 %{?with_dist_kernel:Requires:	kernel-fs-shfs}
