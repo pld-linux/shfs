@@ -26,6 +26,7 @@ Patch2:		%{name}-space_chars.patch
 Patch3:		%{name}-uidgid32.patch
 Patch4:		%{name}-gcc4.patch
 Patch5:		%{name}-inode_oops.patch
+Patch6:		%{name}-d_entry.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
@@ -98,6 +99,7 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p0
 
 %build
 %if %{with kernel}
