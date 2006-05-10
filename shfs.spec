@@ -99,7 +99,7 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
+%patch6 -p1
 
 %build
 %if %{with kernel}
