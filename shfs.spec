@@ -29,10 +29,10 @@ Patch5:		%{name}-inode_oops.patch
 Patch6:		%{name}-d_entry.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.153
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
+BuildRequires:	rpmbuild(macros) >= 1.326
 %endif
-%{?with_dist_kernel:Requires:	kernel-fs-shfs}
+%{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -53,7 +53,7 @@ optymalizacje pod k±tem zdalnego systemu itp.
 
 Ten pakiet zawiera programy narzêdziowe dla SHFS.
 
-%package -n kernel-fs-shfs
+%package -n kernel%{_alt_kernel}-fs-shfs
 Summary:	SHell File System Linux kernel module
 Summary(pl):	Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -63,15 +63,18 @@ Requires(post,postun):	/sbin/depmod
 %requires_releq_kernel_up
 Requires(postun):	%releq_kernel_up
 %endif
+Provides:	kernel(shfs)
+%if "%{_alt_kernel}" == "%{nil}"
 Obsoletes:	kernel-misc-shfs
+%endif
 
-%description -n kernel-fs-shfs
+%description -n kernel%{_alt_kernel}-fs-shfs
 SHell File System Linux kernel module.
 
-%description -n kernel-fs-shfs -l pl
+%description -n kernel%{_alt_kernel}-fs-shfs -l pl
 Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 
-%package -n kernel-smp-fs-shfs
+%package -n kernel%{_alt_kernel}-smp-fs-shfs
 Summary:	SHell File System Linux SMP kernel module
 Summary(pl):	Modu³ j±dra Linuksa SMP obs³uguj±cy pow³okowy system plików
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -81,14 +84,15 @@ Requires(post,postun):	/sbin/depmod
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
-Provides:	kernel-fs-shfs
-Obsoletes:	kernel-fs-shfs
+Provides:	kernel(shfs)
+%if "%{_alt_kernel}" == "%{nil}"
 Obsoletes:	kernel-smp-misc-shfs
+%endif
 
-%description -n kernel-fs-shfs
+%description -n kernel%{_alt_kernel}-fs-shfs
 SHell File System Linux kernel module.
 
-%description -n kernel-smp-fs-shfs -l pl
+%description -n kernel%{_alt_kernel}-smp-fs-shfs -l pl
 Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 
 %prep
@@ -104,38 +108,18 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %build
 %if %{with kernel}
 cd shfs/Linux-2.6
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-		exit 1
-	fi
-	install -d o/include/linux
-	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-	%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-
-	echo "obj-m := shfs.o" > Makefile
-	echo "shfs-objs := dcache.o dir.o fcache.o file.o inode.o ioctl.o proc.o shell.o symlink.o" >> Makefile
-	%{__make} -C %{_kernelsrcdir} clean \
-		%{?with_verbose:V=1} \
-		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		M=$PWD O=$PWD/o
-	%{__make} -C %{_kernelsrcdir} modules \
-%if "%{_target_base_arch}" != "%{_arch}"
-		ARCH=%{_target_base_arch} \
-		CROSS_COMPILE=%{_target_base_cpu}-pld-linux- \
-%endif
-		HOSTCC="%{__cc}" \
-		%{?with_verbose:V=1} \
-		M=$PWD O=$PWD/o
-	mv shfs.ko shfs-$cfg.ko
-done
+cat > Makefile <<'EOF'
+obj-m := shfs.o
+shfs-objs := dcache.o dir.o fcache.o file.o inode.o \
+		ioctl.o proc.o shell.o symlink.o
+EOF
+%build_kernel_modules -m shfs
 cd -
 %endif
 
 %if %{with userspace}
 %{__make} -C shfsmount \
-	SHFS_VERSION=\"%{version}\" \
+	SHFS_VERSION="\"%{version}\"" \
 	CC="%{__cc} %{rpmcflags}" \
 	LINKER="%{__cc}"	\
 	LDFLAGS="%{rpmldflags}"
@@ -147,13 +131,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
 cd shfs/Linux-2.6
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs/shfs
-install shfs-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko
-%if %{with smp} && %{with dist_kernel}
-install shfs-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/shfs.ko
-%endif
+%install_kernel_modules -m shfs -d kernel/fs/shfs
 cd -
 %endif
 
@@ -166,16 +144,16 @@ cd -
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-n kernel-fs-shfs
+%post	-n kernel%{_alt_kernel}-fs-shfs
 %depmod %{_kernel_ver}
 
-%postun	-n kernel-fs-shfs
+%postun	-n kernel%{_alt_kernel}-fs-shfs
 %depmod %{_kernel_ver}
 
-%post	-n kernel-smp-fs-shfs
+%post	-n kernel%{_alt_kernel}-smp-fs-shfs
 %depmod %{_kernel_ver}smp
 
-%postun -n kernel-smp-fs-shfs
+%postun -n kernel%{_alt_kernel}-smp-fs-shfs
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -189,13 +167,15 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%files -n kernel-fs-shfs
+%files -n kernel%{_alt_kernel}-fs-shfs
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/kernel/fs/shfs
+%dir /lib/modules/%{_kernel_ver}/kernel/fs/shfs
+/lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-fs-shfs
+%files -n kernel%{_alt_kernel}-smp-fs-shfs
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs
+%dir /lib/modules/%{_kernel_ver}smp/kernel/fs/shfs
+/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/shfs.ko*
 %endif
 %endif
