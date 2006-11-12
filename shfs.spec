@@ -104,17 +104,15 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-
-%build
-%if %{with kernel}
-cd shfs/Linux-2.6
-cat > Makefile <<'EOF'
+cat > shfs/Linux-2.6/Makefile <<'EOF'
 obj-m := shfs.o
 shfs-objs := dcache.o dir.o fcache.o file.o inode.o \
 		ioctl.o proc.o shell.o symlink.o
 EOF
-%build_kernel_modules -m shfs
-cd -
+
+%build
+%if %{with kernel}
+%build_kernel_modules -C shfs/Linux-2.6 -m shfs
 %endif
 
 %if %{with userspace}
@@ -130,9 +128,7 @@ cd -
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-cd shfs/Linux-2.6
-%install_kernel_modules -m shfs -d kernel/fs/shfs
-cd -
+%install_kernel_modules -m shfs/Linux-2.6/shfs -d kernel/fs/shfs
 %endif
 
 %if %{with userspace}
