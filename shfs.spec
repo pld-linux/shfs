@@ -30,7 +30,7 @@ Patch6:		%{name}-d_entry.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.326
+BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
 %{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
