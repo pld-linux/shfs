@@ -15,7 +15,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	18
+%define		_rel	19
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
@@ -32,6 +32,7 @@ Patch3:		%{name}-uidgid32.patch
 Patch4:		%{name}-gcc4.patch
 Patch5:		%{name}-inode_oops.patch
 Patch6:		%{name}-d_entry.patch
+Patch7:		%{name}-shfs_get_sb.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
@@ -109,6 +110,8 @@ Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
+
 cat > shfs/Linux-2.6/Makefile <<'EOF'
 obj-m := shfs.o
 shfs-objs := dcache.o dir.o fcache.o file.o inode.o \
