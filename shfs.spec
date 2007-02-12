@@ -17,7 +17,7 @@
 #
 %define		_rel	19
 Summary:	(Secure) SHell FileSystem utilities
-Summary(pl.UTF-8):   Narzędzia obsługujące system plików przez ssh
+Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
 Name:		shfs
 Version:	0.35
 Release:	%{_rel}
@@ -61,7 +61,7 @@ Ten pakiet zawiera programy narzędziowe dla SHFS.
 
 %package -n kernel%{_alt_kernel}-fs-shfs
 Summary:	SHell File System Linux kernel module
-Summary(pl.UTF-8):   Moduł jądra Linuksa obsługujący powłokowy system plików
+Summary(pl.UTF-8):	Moduł jądra Linuksa obsługujący powłokowy system plików
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -82,7 +82,7 @@ Moduł jądra Linuksa obsługujący powłokowy system plików.
 
 %package -n kernel%{_alt_kernel}-smp-fs-shfs
 Summary:	SHell File System Linux SMP kernel module
-Summary(pl.UTF-8):   Moduł jądra Linuksa SMP obsługujący powłokowy system plików
+Summary(pl.UTF-8):	Moduł jądra Linuksa SMP obsługujący powłokowy system plików
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
