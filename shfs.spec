@@ -2,8 +2,6 @@
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	up		# don't build UP module
-%bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
@@ -16,7 +14,7 @@
 %undefine	with_smp
 %endif
 #
-%define		_rel	19
+%define		_rel	20
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
 Name:		shfs
@@ -34,10 +32,11 @@ Patch4:		%{name}-gcc4.patch
 Patch5:		%{name}-inode_oops.patch
 Patch6:		%{name}-d_entry.patch
 Patch7:		%{name}-shfs_get_sb.patch
+Patch8:		%{name}-2.6.19.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.330
+BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
@@ -67,8 +66,8 @@ Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
-%requires_releq_kernel_up
-Requires(postun):	%releq_kernel_up
+%requires_releq_kernel
+Requires(postun):	%releq_kernel
 %endif
 Provides:	kernel(shfs)
 %if "%{_alt_kernel}" == "%{nil}"
@@ -81,27 +80,6 @@ SHell File System Linux kernel module.
 %description -n kernel%{_alt_kernel}-fs-shfs -l pl.UTF-8
 Moduł jądra Linuksa obsługujący powłokowy system plików.
 
-%package -n kernel%{_alt_kernel}-smp-fs-shfs
-Summary:	SHell File System Linux SMP kernel module
-Summary(pl.UTF-8):	Moduł jądra Linuksa SMP obsługujący powłokowy system plików
-Release:	%{_rel}@%{_kernel_ver_str}
-Group:		Base/Kernel
-Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel_smp
-Requires(postun):	%releq_kernel_smp
-%endif
-Provides:	kernel(shfs)
-%if "%{_alt_kernel}" == "%{nil}"
-Obsoletes:	kernel-smp-misc-shfs
-%endif
-
-%description -n kernel%{_alt_kernel}-fs-shfs
-SHell File System Linux kernel module.
-
-%description -n kernel%{_alt_kernel}-smp-fs-shfs -l pl.UTF-8
-Moduł jądra Linuksa obsługujący powłokowy system plików.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -112,6 +90,7 @@ Moduł jądra Linuksa obsługujący powłokowy system plików.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 cat > shfs/Linux-2.6/Makefile <<'EOF'
 obj-m := shfs.o
@@ -155,12 +134,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun	-n kernel%{_alt_kernel}-fs-shfs
 %depmod %{_kernel_ver}
 
-%post	-n kernel%{_alt_kernel}-smp-fs-shfs
-%depmod %{_kernel_ver}smp
-
-%postun -n kernel%{_alt_kernel}-smp-fs-shfs
-%depmod %{_kernel_ver}smp
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
@@ -172,17 +145,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-fs-shfs
 %defattr(644,root,root,755)
 %dir /lib/modules/%{_kernel_ver}/kernel/fs/shfs
 /lib/modules/%{_kernel_ver}/kernel/fs/shfs/shfs.ko*
-%endif
-
-%if %{with smp} && %{with dist_kernel}
-%files -n kernel%{_alt_kernel}-smp-fs-shfs
-%defattr(644,root,root,755)
-%dir /lib/modules/%{_kernel_ver}smp/kernel/fs/shfs
-/lib/modules/%{_kernel_ver}smp/kernel/fs/shfs/shfs.ko*
-%endif
 %endif
