@@ -35,7 +35,7 @@ Patch7:		%{name}-shfs_get_sb.patch
 Patch8:		%{name}-2.6.19.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %{?with_dist_kernel:Requires:	kernel(shfs)}
