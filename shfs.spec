@@ -8,14 +8,18 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
 #
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
-%endif
-#
 %ifarch sparc
 %undefine	with_smp
 %endif
 #
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+#
+%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
+%define	alt_kernel	grsecurity
+%endif
+
 %define		_rel	55
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
