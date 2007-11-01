@@ -22,7 +22,7 @@
 %undefine	with_userspace
 %endif
 
-%define		_rel	55
+%define		_rel	56
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		shfs
