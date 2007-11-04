@@ -23,23 +23,24 @@
 %endif
 
 %define		_rel	56
+%define		pname	shfs
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
-Name:		shfs
+Name:		%{pname}%{_alt_kernel}
 Version:	0.35
 Release:	%{_rel}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/shfs/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/shfs/%{pname}-%{version}.tar.gz
 # Source0-md5:	016f49d71bc32eee2b5d11fc1600cfbe
-Patch0:		%{name}-opt.patch
-Patch1:		%{name}-df.patch
-Patch2:		%{name}-space_chars.patch
-Patch3:		%{name}-uidgid32.patch
-Patch4:		%{name}-gcc4.patch
-Patch5:		%{name}-inode_oops.patch
-Patch6:		%{name}-d_entry.patch
-Patch7:		%{name}-shfs_get_sb.patch
+Patch0:		%{pname}-opt.patch
+Patch1:		%{pname}-df.patch
+Patch2:		%{pname}-space_chars.patch
+Patch3:		%{pname}-uidgid32.patch
+Patch4:		%{pname}-gcc4.patch
+Patch5:		%{pname}-inode_oops.patch
+Patch6:		%{pname}-d_entry.patch
+Patch7:		%{pname}-shfs_get_sb.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
@@ -109,7 +110,7 @@ SHell File System Linux kernel module.
 Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
 
 %prep
-%setup -q
+%setup -q -n %{pname}-%{version}
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
