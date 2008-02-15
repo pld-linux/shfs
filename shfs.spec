@@ -23,7 +23,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		%{pname}%{_alt_kernel}
 Version:	0.35
-Release:	62
+Release:	63
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/shfs/%{pname}-%{version}.tar.gz
@@ -41,7 +41,6 @@ URL:		http://shfs.sourceforge.net/
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
-%{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
