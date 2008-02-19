@@ -23,7 +23,7 @@ Summary:	(Secure) SHell FileSystem utilities
 Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
 Name:		%{pname}%{_alt_kernel}
 Version:	0.35
-Release:	63
+Release:	64
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/shfs/%{pname}-%{version}.tar.gz
