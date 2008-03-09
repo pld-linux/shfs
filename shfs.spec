@@ -33,6 +33,7 @@ Patch5:		%{name}-inode_oops.patch
 Patch6:		%{name}-d_entry.patch
 Patch7:		%{name}-shfs_get_sb.patch
 Patch8:		%{name}-2.6.19.patch
+Patch9:		%{name}-kmem_cache.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -91,6 +92,7 @@ Moduł jądra Linuksa obsługujący powłokowy system plików.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 cat > shfs/Linux-2.6/Makefile <<'EOF'
 obj-m := shfs.o
