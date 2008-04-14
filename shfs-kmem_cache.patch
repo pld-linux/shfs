@@ -14,12 +14,11 @@ diff -urp shfs-0.35./shfs/Linux-2.6/fcache.c shfs-0.35/shfs/Linux-2.6/fcache.c
 +#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,23))
  	file_cache = kmem_cache_create("shfs_file", sizeof(struct shfs_file), 0, 0, NULL, NULL);
 +#else
-+	file_cache = kmem_cache_create("shfs_file", sizeof(struct shfs_file), 0, NULL, NULL);
++	file_cache = kmem_cache_create("shfs_file", sizeof(struct shfs_file), 0, SLAB_HWCACHE_ALIGN, NULL);
 +#endif
  	DEBUG("file_cache: %p\n", file_cache);
  }
  
-Tylko w shfs-0.35/shfs/Linux-2.6: fcache.c~
 diff -urp shfs-0.35./shfs/Linux-2.6/inode.c shfs-0.35/shfs/Linux-2.6/inode.c
 --- shfs-0.35./shfs/Linux-2.6/inode.c	2008-03-09 02:36:50.429634000 +0100
 +++ shfs-0.35/shfs/Linux-2.6/inode.c	2008-03-09 03:26:23.725287472 +0100
@@ -32,6 +31,30 @@ diff -urp shfs-0.35./shfs/Linux-2.6/inode.c shfs-0.35/shfs/Linux-2.6/inode.c
  
  void 
  shfs_set_inode_attr(struct inode *inode, struct shfs_fattr *fattr)
+@@ -67,7 +67,11 @@ shfs_set_inode_attr(struct inode *inode,
+ 
+ 	if (!timespec_equal(&inode->i_mtime, &last_time) || inode->i_size != last_size) {
+ 		DEBUG("inode changed (%ld/%ld, %lu/%lu)\n", inode->i_mtime.tv_sec, last_time.tv_sec, (unsigned long)inode->i_size, (unsigned long)last_size);
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24))
++		invalidate_mapping_pages(inode->i_mapping, 0, -1);
++#else
+ 		invalidate_inode_pages(inode->i_mapping);
++#endif
+ 		fcache_file_clear(inode);
+ 	}
+ }
+@@ -176,7 +180,11 @@ shfs_refresh_inode(struct dentry *dentry
+ 		 * But we do want to invalidate the caches ...
+ 		 */
+ 		if (!S_ISDIR(inode->i_mode))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24))
++			invalidate_mapping_pages(inode->i_mapping, 0, -1);
++#else
+ 			invalidate_inode_pages(inode->i_mapping);
++#endif
+ 		else
+ 			shfs_invalid_dir_cache(inode);
+ 		result = -EIO;
 @@ -388,8 +388,12 @@ init_shfs(void)
  {
  	printk(KERN_NOTICE "SHell File System, (c) 2002-2004 Miroslav Spousta\n");
@@ -40,13 +63,12 @@ diff -urp shfs-0.35./shfs/Linux-2.6/inode.c shfs-0.35/shfs/Linux-2.6/inode.c
  	inode_cache = kmem_cache_create("shfs_inode", sizeof(struct shfs_inode_info), 0, 0, NULL, NULL);
 -	
 +#else
-+	inode_cache = kmem_cache_create("shfs_inode", sizeof(struct shfs_inode_info), 0, NULL, NULL);
++	inode_cache = kmem_cache_create("shfs_inode", sizeof(struct shfs_inode_info), 0, SLAB_HWCACHE_ALIGN, NULL);
 +#endif
 +
  	debug_level = 0;
  #ifdef ENABLE_DEBUG
  	alloc = 0;
-Tylko w shfs-0.35/shfs/Linux-2.6: inode.c~
 diff -urp shfs-0.35./shfs/Linux-2.6/shfs_debug.h shfs-0.35/shfs/Linux-2.6/shfs_debug.h
 --- shfs-0.35./shfs/Linux-2.6/shfs_debug.h	2004-06-01 15:16:19.000000000 +0200
 +++ shfs-0.35/shfs/Linux-2.6/shfs_debug.h	2008-03-09 03:20:49.748240839 +0100
