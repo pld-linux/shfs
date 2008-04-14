@@ -365,6 +365,22 @@
  		SIGLOCK(flags);
  		if (result == -EPIPE && !sigpipe) {
  			sigdelset(&current->pending.signal, SIGPIPE);
+@@ -621,9 +621,15 @@ error:
+ }
+ 
+ int
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19))
++shfs_statfs(struct dentry *dentry, struct kstatfs *attr)
++{
++	struct shfs_sb_info *info = info_from_sb(dentry->d_sb);
++#else
+ shfs_statfs(struct super_block *sb, struct kstatfs *attr)
+ {
+ 	struct shfs_sb_info *info = info_from_sb(sb);
++#endif
+ 
+ 	DEBUG("\n");
+ 	return info->fops.statfs(info, attr); 
 --- shfs-0.35/shfs/Linux-2.6/shfs.h~	2004-06-01 13:16:19.000000000 +0000
 +++ shfs-0.35/shfs/Linux-2.6/shfs.h	2007-03-28 17:31:34.271161000 +0000
 @@ -23,6 +23,7 @@
@@ -375,3 +391,17 @@
  
  struct shfs_fattr {
  	unsigned long 	f_ino;
+--- shfs-0.35/shfs/Linux-2.6/shfs_fs.h~   2008-04-14 01:30:03.437923642 +0200
++++ shfs-0.35/shfs/Linux-2.6/shfs_fs.h    2008-04-14 01:33:19.924419671 +0200
+@@ -100,7 +100,11 @@ int reply(char *s);
+ void set_garbage(struct shfs_sb_info *info, int write, int count);
+ int get_name(struct dentry *d, char *name);
+ int shfs_notify_change(struct dentry *dentry, struct iattr *attr);
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19))
++int shfs_statfs(struct dentry *dentry, struct kstatfs *attr);
++#else
+ int shfs_statfs(struct super_block *sb, struct kstatfs *attr);
++#endif
+ 	
+ /* shfs/inode.c */
+ void shfs_set_inode_attr(struct inode *inode, struct shfs_fattr *fattr);
