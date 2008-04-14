@@ -405,3 +405,29 @@
  	
  /* shfs/inode.c */
  void shfs_set_inode_attr(struct inode *inode, struct shfs_fattr *fattr);
+--- shfs-0.35/shfs/Linux-2.6/symlink.c~	2004-06-01 15:16:19.000000000 +0200
++++ shfs-0.35/shfs/Linux-2.6/symlink.c	2008-04-14 02:13:03.760584134 +0200
+@@ -41,7 +41,11 @@ error:
+ 	return result;
+ }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,18)
+ static int
++#else
++static void *
++#endif
+ shfs_follow_link(struct dentry *dentry, struct nameidata *nd)
+ {
+ 	struct shfs_sb_info *info = info_from_dentry(dentry);
+@@ -61,7 +65,11 @@ shfs_follow_link(struct dentry *dentry, 
+ 	DEBUG("%s\n", real_name);
+ 	result = vfs_follow_link(nd, real_name);
+ error:
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,18)
+ 	return result;
++#else
++	return NULL;
++#endif
+ }
+ 
+ struct inode_operations shfs_symlink_inode_operations = {
