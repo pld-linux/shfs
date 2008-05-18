@@ -4,36 +4,39 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	userspace	# don't build userspace tools
-%bcond_with	grsec_kernel	# build for kernel-grsecurity
-#
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
+
+%if %{without kernel}
+%undefine	with_dist_kernel
 %endif
-#
-%ifarch sparc
-%undefine	with_smp
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
 %endif
-#
-%define		_rel	20
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
+
+%define		rel		65
+%define		pname	shfs
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
-Name:		shfs
+Name:		%{pname}%{_alt_kernel}
 Version:	0.35
-Release:	%{_rel}
+Release:	%{rel}
 License:	GPL v2
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/shfs/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/shfs/%{pname}-%{version}.tar.gz
 # Source0-md5:	016f49d71bc32eee2b5d11fc1600cfbe
-Patch0:		%{name}-opt.patch
-Patch1:		%{name}-df.patch
-Patch2:		%{name}-space_chars.patch
-Patch3:		%{name}-uidgid32.patch
-Patch4:		%{name}-gcc4.patch
-Patch5:		%{name}-inode_oops.patch
-Patch6:		%{name}-d_entry.patch
-Patch7:		%{name}-shfs_get_sb.patch
-Patch8:		%{name}-2.6.19.patch
-Patch9:		%{name}-kmem_cache.patch
+Patch0:		%{pname}-opt.patch
+Patch1:		%{pname}-df.patch
+Patch2:		%{pname}-space_chars.patch
+Patch3:		%{pname}-uidgid32.patch
+Patch4:		%{pname}-gcc4.patch
+Patch5:		%{pname}-inode_oops.patch
+Patch6:		%{pname}-d_entry.patch
+Patch7:		%{pname}-shfs_get_sb.patch
+Patch8:		%{pname}-2.6.19.patch
+Patch9:		%{pname}-kmem_cache.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -63,14 +66,10 @@ Ten pakiet zawiera programy narzędziowe dla SHFS.
 %package -n kernel%{_alt_kernel}-fs-shfs
 Summary:	SHell File System Linux kernel module
 Summary(pl.UTF-8):	Moduł jądra Linuksa obsługujący powłokowy system plików
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel
-Requires(postun):	%releq_kernel
-%endif
-Provides:	kernel(shfs)
 %if "%{_alt_kernel}" == "%{nil}"
 Obsoletes:	kernel-misc-shfs
 %endif
@@ -82,7 +81,7 @@ SHell File System Linux kernel module.
 Moduł jądra Linuksa obsługujący powłokowy system plików.
 
 %prep
-%setup -q
+%setup -q -n %{pname}-%{version}
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
