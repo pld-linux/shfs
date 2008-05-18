@@ -5,10 +5,6 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	userspace	# don't build userspace tools
 
-%ifarch sparc
-%undefine	with_smp
-%endif
-
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
@@ -48,6 +44,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
+ExcludeArch:	%{?with_userspace:sparc}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
