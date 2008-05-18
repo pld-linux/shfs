@@ -44,7 +44,6 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
 %{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
-ExcludeArch:	%{?with_userspace:sparc}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
