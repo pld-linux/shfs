@@ -20,7 +20,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel		20
+%define		rel		65
 %define		pname	shfs
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
@@ -72,12 +72,8 @@ Summary:	SHell File System Linux kernel module
 Summary(pl.UTF-8):	Moduł jądra Linuksa obsługujący powłokowy system plików
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel
-Requires(postun):	%releq_kernel
-%endif
-Provides:	kernel(shfs)
 %if "%{_alt_kernel}" == "%{nil}"
 Obsoletes:	kernel-misc-shfs
 %endif
