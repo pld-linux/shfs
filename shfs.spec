@@ -4,22 +4,24 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	userspace	# don't build userspace tools
-%bcond_with	grsec_kernel	# build for kernel-grsecurity
-#
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
-%endif
-#
+
 %ifarch sparc
 %undefine	with_smp
 %endif
-#
-%define		_rel	20
+
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+
+%define		rel	20
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
 Name:		shfs
 Version:	0.35
-Release:	%{_rel}
+Release:	%{rel}
 License:	GPL v2
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/shfs/%{name}-%{version}.tar.gz
@@ -63,7 +65,7 @@ Ten pakiet zawiera programy narzędziowe dla SHFS.
 %package -n kernel%{_alt_kernel}-fs-shfs
 Summary:	SHell File System Linux kernel module
 Summary(pl.UTF-8):	Moduł jądra Linuksa obsługujący powłokowy system plików
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
