@@ -20,7 +20,7 @@
 
 %define		pname	shfs
 Summary:	(Secure) SHell FileSystem utilities
-Summary(pl):	Narzêdzia obs³uguj±ce system plików przez ssh
+Summary(pl.UTF-8):	NarzÄ™dzia obsÅ‚ugujÄ…ce system plikÃ³w przez ssh
 Name:		%{pname}%{_alt_kernel}
 Version:	0.35
 Release:	64
@@ -52,18 +52,18 @@ different caches for access speedup, target system optimisations, etc.
 
 This package contains utilities for SHFS.
 
-%description -l pl
-SHFS to prosty i ³atwy w u¿yciu modu³ j±dra Linuksa 2.4.10+ i 2.6
-pozwalaj±cy montowaæ zdalne systemy plików przy u¿yciu zwyk³ego
-po³±czenia ze zdaln± pow³ok± (ssh lub rsh). Obs³uguje pewne mi³e
-cechy, takie jak ró¿ne sposoby buforowania dla przyspieszenia dostêpu,
-optymalizacje pod k±tem zdalnego systemu itp.
+%description -l pl.UTF-8
+SHFS to prosty i Å‚atwy w uÅ¼yciu moduÅ‚ jÄ…dra Linuksa 2.4.10+ i 2.6
+pozwalajÄ…cy montowaÄ‡ zdalne systemy plikÃ³w przy uÅ¼yciu zwykÅ‚ego
+poÅ‚Ä…czenia ze zdalnÄ… powÅ‚okÄ… (ssh lub rsh). ObsÅ‚uguje pewne miÅ‚e
+cechy, takie jak rÃ³Å¼ne sposoby buforowania dla przyspieszenia dostÄ™pu,
+optymalizacje pod kÄ…tem zdalnego systemu itp.
 
-Ten pakiet zawiera programy narzêdziowe dla SHFS.
+Ten pakiet zawiera programy narzÄ™dziowe dla SHFS.
 
 %package -n kernel%{_alt_kernel}-fs-shfs
 Summary:	SHell File System Linux kernel module
-Summary(pl):	Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików
+Summary(pl.UTF-8):	ModuÅ‚ jÄ…dra Linuksa obsÅ‚ugujÄ…cy powÅ‚okowy system plikÃ³w
 Group:		Base/Kernel
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
@@ -74,12 +74,12 @@ Obsoletes:	kernel-misc-shfs
 %description -n kernel%{_alt_kernel}-fs-shfs
 SHell File System Linux kernel module.
 
-%description -n kernel%{_alt_kernel}-fs-shfs -l pl
-Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
+%description -n kernel%{_alt_kernel}-fs-shfs -l pl.UTF-8
+ModuÅ‚ jÄ…dra Linuksa obsÅ‚ugujÄ…cy powÅ‚okowy system plikÃ³w.
 
 %package -n kernel%{_alt_kernel}-smp-fs-shfs
 Summary:	SHell File System Linux SMP kernel module
-Summary(pl):	Modu³ j±dra Linuksa SMP obs³uguj±cy pow³okowy system plików
+Summary(pl.UTF-8):	ModuÅ‚ jÄ…dra Linuksa SMP obsÅ‚ugujÄ…cy powÅ‚okowy system plikÃ³w
 Group:		Base/Kernel
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}-smp(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
@@ -90,8 +90,8 @@ Obsoletes:	kernel-smp-misc-shfs
 %description -n kernel%{_alt_kernel}-fs-shfs
 SHell File System Linux kernel module.
 
-%description -n kernel%{_alt_kernel}-smp-fs-shfs -l pl
-Modu³ j±dra Linuksa obs³uguj±cy pow³okowy system plików.
+%description -n kernel%{_alt_kernel}-smp-fs-shfs -l pl.UTF-8
+ModuÅ‚ jÄ…dra Linuksa obsÅ‚ugujÄ…cy powÅ‚okowy system plikÃ³w.
 
 %prep
 %setup -q -n %{pname}-%{version}
