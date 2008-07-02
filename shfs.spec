@@ -16,7 +16,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel		20
+%define		rel		66
 %define		pname	shfs
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
@@ -42,7 +42,6 @@ URL:		http://shfs.sourceforge.net/
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 %endif
-%{?with_dist_kernel:Requires:	kernel(shfs)}
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
