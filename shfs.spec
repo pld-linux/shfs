@@ -16,7 +16,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel		66
+%define		rel		67
 %define		pname	shfs
 Summary:	(Secure) SHell FileSystem utilities
 Summary(pl.UTF-8):	Narzędzia obsługujące system plików przez ssh
@@ -40,7 +40,7 @@ Patch9:		%{pname}-kmem_cache.patch
 URL:		http://shfs.sourceforge.net/
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-BuildRequires:	rpmbuild(macros) >= 1.379
+BuildRequires:	rpmbuild(macros) >= 1.452
 %endif
 Obsoletes:	shfsmount
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -65,7 +65,7 @@ Ten pakiet zawiera programy narzędziowe dla SHFS.
 %package -n kernel%{_alt_kernel}-fs-shfs
 Summary:	SHell File System Linux kernel module
 Summary(pl.UTF-8):	Moduł jądra Linuksa obsługujący powłokowy system plików
-Release:	%{rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_vermagic}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
